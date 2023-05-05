@@ -135,6 +135,7 @@ hr.RampBreak--l {
   width: 1.25rem;
   height: 1.25rem;
   cursor: pointer;
+  outline: none;
 }
 
 .RampInputCheckbox--label-disabled {
@@ -149,9 +150,10 @@ hr.RampBreak--l {
   background-color: var(--color-constructive);
 }
 
-.RampInputCheckbox--input {
-  display: none;
-}
+/* .RampInputCheckbox--input {
+   display: ; 
+  outline: ;
+} */
 
 .RampButton {
   border: 1px solid var(--color-light-shade);

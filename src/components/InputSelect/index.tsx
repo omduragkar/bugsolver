@@ -1,5 +1,5 @@
 import Downshift from "downshift"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import classNames from "classnames"
 import { DropdownPosition, GetDropdownPositionFn, InputSelectOnChange, InputSelectProps } from "./types"
 
@@ -29,7 +29,28 @@ export function InputSelect<TItem>({
     },
     [consumerOnChange]
   )
+// Task 1 issue solved!
+  useEffect(() => {
+    const handleScroll = () => {
+      const thatRectDiv = document.getElementById('RampSelectedInput')
+      // console.log("🚀 ~ file: index.tsx:36 ~ handleScroll ~ thatRectDiv:", thatRectDiv)
+      
+      // const rect = thatRectDiv?.getBoundingClientRect()
+      // let newdropos={...dropdownPosition, top:rect?.top + 100 - window.scrollY, left: rect?.left };
+      // console.log("🚀 ~ file: index.tsx:41 ~ handleScroll ~ newdropos:", newdropos)
+      
+      setDropdownPosition(getDropdownPosition(thatRectDiv))
+    }
 
+    window.addEventListener("scroll", handleScroll)
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [dropdownPosition])
+  // console.log({
+  //   dropdownPosition
+  // })
   return (
     <Downshift<TItem>
       id="RampSelect"
@@ -58,6 +79,7 @@ export function InputSelect<TItem>({
             <div className="RampBreak--xs" />
             <div
               className="RampInputSelect--input"
+              id="RampSelectedInput"
               onClick={(event) => {
                 setDropdownPosition(getDropdownPosition(event.target))
                 toggleProps.onClick(event)
@@ -121,8 +143,15 @@ const getDropdownPosition: GetDropdownPositionFn = (target) => {
   if (target instanceof Element) {
     const { top, left } = target.getBoundingClientRect()
     const { scrollY } = window
+    let topy = 0;
+    if(scrollY >= top){
+      topy =  top + 63 
+    }else{
+      topy = top - scrollY + 63 
+
+    }
     return {
-      top: scrollY + top + 63,
+      top: topy,
       left,
     }
   }

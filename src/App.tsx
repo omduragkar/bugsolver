@@ -31,8 +31,14 @@ export function App() {
 
   const loadTransactionsByEmployee = useCallback(
     async (employeeId: string) => {
-      paginatedTransactionsUtils.invalidateData()
-      await transactionsByEmployeeUtils.fetchById(employeeId)
+      // Task 3 Solution
+      if(employeeId != ""){
+        paginatedTransactionsUtils.invalidateData()
+        await transactionsByEmployeeUtils.fetchById(employeeId)
+        
+      }else{
+        await transactionsByEmployeeUtils.fetchAll()
+      }
     },
     [paginatedTransactionsUtils, transactionsByEmployeeUtils]
   )
@@ -42,7 +48,9 @@ export function App() {
       loadAllTransactions()
     }
   }, [employeeUtils.loading, employees, loadAllTransactions])
-
+  console.log({
+    pl: paginatedTransactionsUtils.loading
+  })
   return (
     <Fragment>
       <main className="MainContainer">
@@ -51,7 +59,8 @@ export function App() {
         <hr className="RampBreak--l" />
 
         <InputSelect<Employee>
-          isLoading={isLoading}
+          // Minor change required for task 5 part 1
+          isLoading={employeeUtils.loading}
           defaultValue={EMPTY_EMPLOYEE}
           items={employees === null ? [] : [EMPTY_EMPLOYEE, ...employees]}
           label="Filter by employee"
@@ -64,7 +73,7 @@ export function App() {
             if (newValue === null) {
               return
             }
-
+            console.log({newValue})
             await loadTransactionsByEmployee(newValue.id)
           }}
         />
@@ -74,7 +83,10 @@ export function App() {
         <div className="RampGrid">
           <Transactions transactions={transactions} />
 
-          {transactions !== null && (
+          {/* 
+            Solution for Task 6
+          {console.log(paginatedTransactions?.nextPage)} */}
+          {transactions !== null && paginatedTransactions?.nextPage !== null && (
             <button
               className="RampButton"
               disabled={paginatedTransactionsUtils.loading}

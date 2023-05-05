@@ -3,6 +3,7 @@ import {
   getTransactionsPaginated,
   getTransactionsByEmployee,
   setTransactionApproval,
+  getAllTransactionsOfEmployee,
 } from "./requests"
 import { PaginatedRequestParams, RequestByEmployeeParams, SetTransactionApprovalParams } from "./types"
 
@@ -44,6 +45,14 @@ export function fakeFetch<TData, TParams extends object = object>(
 
         case "transactionsByEmployee":
           result = getTransactionsByEmployee(params as RequestByEmployeeParams) as unknown as TData
+
+          setTimeout(() => {
+            mockApiLogger({ data: { endpoint, params, result } })
+            resolve(result)
+          }, mockTimeout * 1.5)
+          break
+        case "getAllTransactionsOfEmployee":
+          result = getAllTransactionsOfEmployee() as unknown as TData
 
           setTimeout(() => {
             mockApiLogger({ data: { endpoint, params, result } })

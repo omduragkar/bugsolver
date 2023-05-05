@@ -20,10 +20,20 @@ export function useTransactionsByEmployee(): TransactionsByEmployeeResult {
     },
     [fetchWithCache]
   )
+  const fetchAll = useCallback(
+    async () => {
+      const data = await fetchWithCache<Transaction[], RequestByEmployeeParams>(
+        "getAllTransactionsOfEmployee"
+      )
+
+      setTransactionsByEmployee(data)
+    },
+    [fetchWithCache]
+  )
 
   const invalidateData = useCallback(() => {
     setTransactionsByEmployee(null)
   }, [])
 
-  return { data: transactionsByEmployee, loading, fetchById, invalidateData }
+  return { data: transactionsByEmployee, loading, fetchById, invalidateData, fetchAll}
 }
